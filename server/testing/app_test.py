@@ -11,7 +11,45 @@ class TestApp:
     '''Flask application in flask_app.py'''
 
     def test_creates_baked_goods(self):
-        '''can POST new baked goods through "/baked_goods" route.'''
+        '''can POST new bake@app.route('/baked_goods', methods=['POST'])
+def create_baked_good():
+    data = request.form
+    bakery_id = data.get('bakery_id')
+
+    if not bakery_id:
+        return jsonify({"error": "bakery_id is required"}), 400
+
+    bakery = Bakery.query.get(bakery_id)
+    if not bakery:
+        return jsonify({"error": "Bakery not found"}), 404
+
+    new_baked_good = BakedGood(
+        name=data.get('name'), 
+        price=data.get('price'), 
+        bakery=bakery
+    )
+    db.session.add(new_baked_good)
+    db.session.commit()
+
+    return jsonify(new_baked_good.to_dict()), 201 
+
+@app.route('/bakeries/<int:id>', methods=['PATCH'])
+def update_bakery(id):
+    bakery = Bakery.query.get_or_404(id)
+    data = request.form
+
+    if 'name' in data:
+        bakery.name = data['name']
+
+    db.session.commit()
+    return jsonify(bakery.to_dict()) 
+
+@app.route('/baked_goods/<int:id>', methods=['DELETE'])
+def delete_baked_good(id):
+    baked_good = BakedGood.query.get_or_404(id)
+    db.session.delete(baked_good)
+    db.session.commit()
+    return jsonify({"message": "Baked good deleted successfully"}) d goods through "/baked_goods" route.'''
 
         with app.app_context():
 
